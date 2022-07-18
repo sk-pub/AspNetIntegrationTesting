@@ -6,4 +6,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="CefSharp.OffScreen.NETCore" Version="103.0.90" />
+  </ItemGroup>
+
 </Project>
