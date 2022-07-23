@@ -1,3 +1,5 @@
+using Testing.Common;
+
 namespace IntegrationTesting
 {
     [UsesVerify]

@@ -1,6 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
 
-namespace IntegrationTesting
+namespace ComponentTesting
 {
     public static class ModuleInitializer
     {
