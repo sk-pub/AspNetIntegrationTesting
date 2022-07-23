@@ -1,6 +1,5 @@
 ﻿using CefSharp;
 using CefSharp.OffScreen;
-using CefSharp.Web;
 
 namespace AspNetIntegrationTesting.Services
 {
@@ -17,15 +16,20 @@ namespace AspNetIntegrationTesting.Services
             settings.SetOffScreenRenderingBestPerformanceArgs();
             settings.DisableGpuAcceleration();
             settings.CachePath = _cachePath;
+            settings.BackgroundColor = Cef.ColorSetARGB(1, 255, 255, 255);
+
+            settings.RemoteDebuggingPort = 8088;
 
             Cef.Initialize(settings);
         }
 
-        public async Task<Stream> GetPdfFromHtml(string html)
+        public async Task<Stream> GetPdfFromUrl(string url)
         {
-            var htmlString = new HtmlString(html);
-            using var page = new ChromiumWebBrowser(htmlString);
+            var browserSettings = new BrowserSettings { BackgroundColor = Cef.ColorSetARGB(1, 255, 255, 255) };
+            using var page = new ChromiumWebBrowser(url, browserSettings);
+
             await page.WaitForNavigationAsync();
+            //await Task.Delay(100000);
 
             var path = Path.GetTempFileName();
 

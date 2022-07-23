@@ -1,8 +1,3 @@
-using AspNetIntegrationTesting;
-using Microsoft.AspNetCore.Mvc.Testing;
-using System.Net;
-using VerifyTests;
-
 namespace IntegrationTesting
 {
     [UsesVerify]
@@ -14,7 +9,8 @@ namespace IntegrationTesting
         public Task VerifyPdf()
         {
             return Verify(_application.GetPdfStreamAsync())
-                .UseExtension("pdf");
+                .UseExtension("pdf")
+                .UseMask($"{nameof(Samples)}.{nameof(VerifyPdf)}.*.mask.png");
         }
     }
 }

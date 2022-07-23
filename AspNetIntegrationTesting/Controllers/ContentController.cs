@@ -8,29 +8,27 @@ namespace AspNetIntegrationTesting.Controllers
     public class ContentController : ControllerBase
     {
         private readonly ILogger<ContentController> _logger;
-        private readonly IContentService _contentService;
         private readonly IPdfService _pdfService;
 
-        public ContentController(ILogger<ContentController> logger, IContentService contentService, IPdfService pdfService)
+        public ContentController(ILogger<ContentController> logger, IPdfService pdfService)
         {
             _logger = logger;
-            _contentService = contentService;
             _pdfService = pdfService;
         }
 
         [HttpGet]
-        public async Task<string> Get()
+        [Route("pdf/{sourceId}")]
+        public async Task<FileResult> GetPdf(int? sourceId)
         {
-            return await _contentService.GetContent();
-        }
+            var sources = new List<string>
+            {
+                "https://picsum.photos/",
+                "https://web.archive.org/"
+            };
 
-        [HttpGet]
-        [Route("pdf")]
-        public async Task<FileResult> GetPdf()
-        {
-            var content = await _contentService.GetContent();
+            var url = sources[sourceId ?? 0];
 
-            return File(await _pdfService.GetPdfFromHtml(content), "application/pdf");
+            return File(await _pdfService.GetPdfFromUrl(url), "application/pdf");
         }
     }
 }

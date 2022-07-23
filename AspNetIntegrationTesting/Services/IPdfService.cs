@@ -2,6 +2,6 @@
 {
     public interface IPdfService
     {
-        Task<Stream> GetPdfFromHtml(string html);
+        Task<Stream> GetPdfFromUrl(string url);
     }
 }
