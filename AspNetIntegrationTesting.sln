@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.2.32630.192
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspNetIntegrationTesting", "AspNetIntegrationTesting\AspNetIntegrationTesting.csproj", "{58D0C198-3641-448B-AD37-D793F48878C0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AspNetIntegrationTesting", "AspNetIntegrationTesting\AspNetIntegrationTesting.csproj", "{58D0C198-3641-448B-AD37-D793F48878C0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationTesting", "IntegrationTesting\IntegrationTesting.csproj", "{9219C06F-7E65-4A83-BB9F-0BF1A52AB80D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IntegrationTesting", "IntegrationTesting\IntegrationTesting.csproj", "{9219C06F-7E65-4A83-BB9F-0BF1A52AB80D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

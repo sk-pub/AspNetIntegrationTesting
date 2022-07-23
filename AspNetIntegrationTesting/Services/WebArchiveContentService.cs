@@ -1,11 +1,11 @@
 ﻿namespace AspNetIntegrationTesting.Services
 {
-    public class DieZeitContentService : IContentService
+    public class WebArchiveContentService : IContentService
     {
         private readonly HttpClient _httpClient;
         private string? _cachedContent;
 
-        public DieZeitContentService(HttpClient httpClient)
+        public WebArchiveContentService(HttpClient httpClient)
         {
             _httpClient = httpClient;
         }
@@ -17,7 +17,7 @@
                 return _cachedContent;
             }
 
-            _cachedContent = await _httpClient.GetStringAsync("https://www.zeit.de/wissen/index");
+            _cachedContent = await _httpClient.GetStringAsync("https://web.archive.org/");
 
             return _cachedContent;
         }
