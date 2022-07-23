@@ -11,6 +11,8 @@ namespace AspNetIntegrationTesting
             // Add services to the container.
             builder.Services.AddTransient<IPdfService, CefPdfService>();
 
+            builder.Services.Configure<ContentOptions>(builder.Configuration.GetSection(ContentOptions.Content));
+
             builder.Services.AddControllers();
 
             builder.WebHost.ConfigureKestrel(options => options.ListenAnyIP(5000));
