@@ -23,7 +23,7 @@ namespace AspNetIntegrationTesting.Controllers
             var sources = new List<string>
             {
                 "https://picsum.photos/",
-                "https://web.archive.org/"
+                "https://google.com/"
             };
 
             var url = sources[sourceId ?? 0];

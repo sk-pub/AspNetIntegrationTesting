@@ -5,8 +5,6 @@ namespace IntegrationTesting
 {
     public static class ModuleInitializer
     {
-        private const string SamplesDirectory = "Samples";
-
         [ModuleInitializer]
         public static void Initialize()
         {
@@ -21,7 +19,7 @@ namespace IntegrationTesting
                 (sourceFile, projectDirectory, type, method) =>
                 {
                     return new(
-                        directory: Path.Combine(projectDirectory, SamplesDirectory),
+                        directory: Path.Combine(projectDirectory, type.Name),
                         typeName: type.Name,
                         methodName: method.Name);
                 });
@@ -91,7 +89,7 @@ namespace IntegrationTesting
 
             var maskPath = Path.IsPathFullyQualified(mask)
                 ? mask
-                : Path.Combine(projectDirectory, SamplesDirectory, mask);
+                : Path.Combine(projectDirectory, mask);
 
             maskPath = maskPath.Replace("*", index.ToString("D2"));
             if (!File.Exists(maskPath))

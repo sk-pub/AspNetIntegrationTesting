@@ -5,12 +5,17 @@ namespace IntegrationTesting
     {
         private readonly Application _application = new Application();
 
-        [Fact]
-        public Task VerifyPdf()
+        [Theory]
+        [InlineData(0)]
+        [InlineData(1)]
+        public Task VerifyPdf(int sourceId)
         {
-            return Verify(_application.GetPdfStreamAsync())
+            var parametersText = $"{sourceId}";
+
+            return Verify(_application.GetPdfStreamAsync(sourceId))
+                .UseTextForParameters(parametersText)
                 .UseExtension("pdf")
-                .UseMask($"{nameof(Samples)}.{nameof(VerifyPdf)}.*.mask.png");
+                .UseMask($"{nameof(Samples)}/{nameof(Samples)}.{nameof(VerifyPdf)}_{parametersText}.*.mask.png");
         }
     }
 }
