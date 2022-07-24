@@ -4,10 +4,10 @@ EXPOSE 5000
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS publish
 WORKDIR /src
-COPY ["AspNetIntegrationTesting.csproj", "AspNetIntegrationTesting/"]
+COPY ["AspNetIntegrationTesting/AspNetIntegrationTesting.csproj", "AspNetIntegrationTesting/"]
 RUN dotnet restore "AspNetIntegrationTesting/AspNetIntegrationTesting.csproj"
 WORKDIR "/src/AspNetIntegrationTesting"
-COPY . .
+COPY ["AspNetIntegrationTesting/.", "."]
 RUN dotnet publish "AspNetIntegrationTesting.csproj" -c Release -r linux-x64 --no-self-contained -p:PublishReadyToRun=true -o /app/publish
 
 FROM base AS final

@@ -1,0 +1,26 @@
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS publish
+
+RUN echo 'deb http://ftp.de.debian.org/debian stretch main contrib' >> /etc/apt/sources.list
+RUN apt-get update && apt-get -y install ghostscript ttf-mscorefonts-installer wget
+
+# Install Chrome
+ARG CHROME_VERSION="103.0.5060.134-1"
+RUN wget --no-verbose -O /tmp/chrome.deb http://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_${CHROME_VERSION}_amd64.deb \
+	&& apt-get install -y /tmp/chrome.deb --no-install-recommends --allow-downgrades \
+	&& rm /tmp/chrome.deb
+
+WORKDIR /src
+COPY ["ComponentTesting/ComponentTesting.csproj", "ComponentTesting/"]
+COPY ["Testing.Common/Testing.Common.csproj", "Testing.Common/"]
+COPY ["AspNetIntegrationTesting/AspNetIntegrationTesting.csproj", "AspNetIntegrationTesting/"]
+RUN dotnet restore "ComponentTesting/ComponentTesting.csproj"
+COPY ["ComponentTesting/.", "ComponentTesting/"]
+COPY ["Testing.Common/.", "Testing.Common/"]
+COPY ["AspNetIntegrationTesting/.", "AspNetIntegrationTesting/"]
+WORKDIR "/src/ComponentTesting"
+
+RUN dotnet build "ComponentTesting.csproj" -c Release -o build
+
+ENV PUPPETEER_EXECUTABLE_PATH "/usr/bin/google-chrome"
+WORKDIR build
+ENTRYPOINT ["dotnet", "test", "ComponentTesting.dll"]

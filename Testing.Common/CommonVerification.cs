@@ -112,7 +112,7 @@ namespace Testing.Common
         private static void RegisterComparers()
         {
             RegisterPdfToPngWithMaskConverter();
-            VerifyImageMagick.RegisterComparers(0.001, ErrorMetric.PerceptualHash);
+            VerifyImageMagick.RegisterComparers(0.01, ErrorMetric.PerceptualHash);
         }
 
         private static void RegisterPdfToPngWithMaskConverter() =>
