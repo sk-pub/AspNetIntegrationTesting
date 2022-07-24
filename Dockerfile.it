@@ -15,17 +15,17 @@ WORKDIR "/usr/share/fonts/windows"
 RUN mkfontdir && mkfontscale && fc-cache -fv
 
 WORKDIR /src
-COPY ["ComponentTesting/ComponentTesting.csproj", "ComponentTesting/"]
+COPY ["IntegrationTesting/IntegrationTesting.csproj", "IntegrationTesting/"]
 COPY ["Testing.Common/Testing.Common.csproj", "Testing.Common/"]
 COPY ["AspNetIntegrationTesting/AspNetIntegrationTesting.csproj", "AspNetIntegrationTesting/"]
-RUN dotnet restore "ComponentTesting/ComponentTesting.csproj"
+RUN dotnet restore "IntegrationTesting/IntegrationTesting.csproj"
 
-COPY ["ComponentTesting/.", "ComponentTesting/"]
+COPY ["IntegrationTesting/.", "IntegrationTesting/"]
 COPY ["Testing.Common/.", "Testing.Common/"]
 COPY ["AspNetIntegrationTesting/.", "AspNetIntegrationTesting/"]
-WORKDIR "/src/ComponentTesting"
-RUN dotnet build "ComponentTesting.csproj" -c Release -o build
+WORKDIR "/src/IntegrationTesting"
+RUN dotnet build "IntegrationTesting.csproj" -c Release -o build
 
 ENV PUPPETEER_EXECUTABLE_PATH "/usr/bin/google-chrome"
 WORKDIR build
-ENTRYPOINT ["dotnet", "test", "ComponentTesting.dll"]
+ENTRYPOINT ["dotnet", "test", "IntegrationTesting.dll"]

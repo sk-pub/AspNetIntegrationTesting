@@ -4,7 +4,7 @@ using System.Reflection;
 
 namespace Testing.Common
 {
-    public static class CommonVerification
+    public static partial class CommonVerification
     {
         private static Assembly _assembly;
 
@@ -69,55 +69,10 @@ namespace Testing.Common
             image.Composite(maskImage, CompositeOperator.Multiply);
         }
 
-        static ConversionResult Convert(Stream stream, IReadOnlyDictionary<string, object> context, MagickFormat magickFormat)
-        {
-            var streams = new List<Stream>();
-
-            MagickReadSettings magickSettings;
-            if (context.TryGetValue("ImageMagick.MagickReadSettings", out var magickSettingsObj))
-            {
-                magickSettings = magickSettingsObj as MagickReadSettings;
-            }
-            else
-            {
-                magickSettings = new()
-                {
-                    Density = new(100, 100)
-                };
-            }
-
-            magickSettings.Format = magickFormat;
-            using var images = new MagickImageCollection();
-            images.Read(stream, magickSettings);
-            var count = images.Count;
-            if (context.TryGetValue("ImageMagick.PagesToInclude", out var pagesToInclude))
-            {
-                count = Math.Min(count, (int)pagesToInclude);
-            }
-
-            for (var index = 0; index < count; index++)
-            {
-                var image = images[index];
-
-                AddMask(context, image, index);
-
-                var memoryStream = new MemoryStream();
-                image.Write(memoryStream, MagickFormat.Png);
-                streams.Add(memoryStream);
-            }
-
-            return new(null, streams.Select(x => new Target("png", x)));
-        }
-
         private static void RegisterComparers()
         {
-            RegisterPdfToPngWithMaskConverter();
-            VerifyImageMagick.RegisterComparers(0.01, ErrorMetric.PerceptualHash);
+            VerifierSettings.RegisterFileConverter("pdf", Convert);
+            VerifyImageMagick.RegisterComparers(0.005, ErrorMetric.Fuzz);
         }
-
-        private static void RegisterPdfToPngWithMaskConverter() =>
-            VerifierSettings.RegisterFileConverter(
-                "pdf",
-                (stream, context) => Convert(stream, context, MagickFormat.Pdf));
     }
 }

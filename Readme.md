@@ -8,3 +8,7 @@ docker build . -t app
 ```sh
 docker build -f Dockerfile.ct . -t component-tests
 ```
+### Integration tests
+```sh
+docker build -f Dockerfile.it . -t integration-tests
+```
