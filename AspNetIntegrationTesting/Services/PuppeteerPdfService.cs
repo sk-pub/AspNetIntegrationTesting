@@ -10,10 +10,18 @@ namespace AspNetIntegrationTesting.Services
         private Browser? _browser;
         private readonly string _browserDownloadPath;
 
+        private static bool IsRunningInContainer =>
+            Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true";
+
         public PuppeteerPdfService()
         {
             _userDataDir = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
             Directory.CreateDirectory(_userDataDir);
+
+            if (IsRunningInContainer)
+            {
+                return;
+            }
 
             _browserDownloadPath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
             Directory.CreateDirectory(_browserDownloadPath);
@@ -72,23 +80,29 @@ namespace AspNetIntegrationTesting.Services
                         ClearDirectories();
                     }
 
-                    using var browserFetcher = new BrowserFetcher(
-                        new BrowserFetcherOptions { Path = _browserDownloadPath });
-
-                    await browserFetcher.DownloadAsync();
-
                     var launchOptions = new LaunchOptions
                     {
                         Headless = true,
                         UserDataDir = _userDataDir,
-                        ExecutablePath = browserFetcher.RevisionInfo(BrowserFetcher.DefaultChromiumRevision).ExecutablePath,
                         Args = new[]
                         {
                             "--disable-gpu",
                             "--disable-gpu-compositing",
-                            "--enable-begin-frame-scheduling"
+                            "--enable-begin-frame-scheduling",
+                            "--no-sandbox" // Required to run under root in a docker container
                         }
                     };
+
+                    if (!IsRunningInContainer)
+                    {
+                        using var browserFetcher = new BrowserFetcher(
+                            new BrowserFetcherOptions { Path = _browserDownloadPath });
+
+                        await browserFetcher.DownloadAsync();
+
+                        launchOptions.ExecutablePath = browserFetcher.RevisionInfo(BrowserFetcher.DefaultChromiumRevision).ExecutablePath;
+                    }
+
                     _browser = await Puppeteer.LaunchAsync(launchOptions);
                 }
             }
