@@ -3,9 +3,14 @@ using Testing.Common;
 namespace IntegrationTesting
 {
     [UsesVerify]
-    public class TestingSamples
+    public class TestingSamples : IAsyncLifetime
     {
         private readonly Application _application = new Application("Testing");
+
+        public Task InitializeAsync()
+        {
+            return Task.CompletedTask;
+        }
 
         [Theory]
         [InlineData(0)]
@@ -18,6 +23,11 @@ namespace IntegrationTesting
                 .UseTextForParameters(parametersText)
                 .UseExtension("pdf")
                 .UseMask($"{nameof(DevelopmentSamples)}/{nameof(DevelopmentSamples)}.{nameof(VerifyPdf)}_{parametersText}.*.mask.png");
+        }
+
+        public async Task DisposeAsync()
+        {
+            await _application.DisposeAsync();
         }
     }
 }

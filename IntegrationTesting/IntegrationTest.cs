@@ -12,11 +12,11 @@ namespace IntegrationTesting
         public async void ShouldReturnPdf(int id)
         {
             // Given the application
-            var application = new WebApplicationFactory<Program>();
+            await using var application = new WebApplicationFactory<Program>();
 
             // When called
-            var httpClient = application.CreateClient();
-            var response = await httpClient.GetAsync($"/content/pdf/{id}");
+            using var httpClient = application.CreateClient();
+            using var response = await httpClient.GetAsync($"/content/pdf/{id}");
 
             // Then the app should respond with HTTP OK
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);

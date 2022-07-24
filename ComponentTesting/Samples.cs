@@ -12,7 +12,7 @@ namespace ComponentTesting
         public async Task VerifyPdf()
         {
             // Given the application
-            var application = new WebApplicationFactory<Program>()
+            await using var application = new WebApplicationFactory<Program>()
                 .WithWebHostBuilder(builder =>
                 {
                     builder.ConfigureTestServices(services =>
@@ -26,9 +26,9 @@ namespace ComponentTesting
                 });
 
             // When called
-            var httpClient = application.CreateClient();
-            var response = await httpClient.GetAsync($"/content/pdf/0");
-            var pdfStream = await response.Content.ReadAsStreamAsync();
+            using var httpClient = application.CreateClient();
+            using var response = await httpClient.GetAsync($"/content/pdf/0");
+            using var pdfStream = await response.Content.ReadAsStreamAsync();
 
             // Then should return the expected PDF
             await Verify(pdfStream)

@@ -9,7 +9,7 @@ namespace AspNetIntegrationTesting
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-            builder.Services.AddTransient<IPdfService, CefPdfService>();
+            builder.Services.AddSingleton<IPdfService, PuppeteerPdfService>();
 
             builder.Services.Configure<ContentOptions>(builder.Configuration.GetSection(ContentOptions.Content));
 

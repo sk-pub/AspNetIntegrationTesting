@@ -12,7 +12,7 @@ namespace ComponentTesting
         public async void ShouldReturnPdf()
         {
             // Given the application
-            var application = new WebApplicationFactory<Program>()
+            await using var application = new WebApplicationFactory<Program>()
                 .WithWebHostBuilder(builder =>
                 {
                     builder.ConfigureTestServices(services =>
@@ -26,8 +26,8 @@ namespace ComponentTesting
                 });
 
             // When called
-            var httpClient = application.CreateClient();
-            var response = await httpClient.GetAsync($"/content/pdf/0");
+            using var httpClient = application.CreateClient();
+            using var response = await httpClient.GetAsync($"/content/pdf/0");
 
             // Then the app should respond with HTTP OK
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
