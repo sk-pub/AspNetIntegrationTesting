@@ -6,7 +6,6 @@ namespace AspNetIntegrationTesting.Services
     public sealed class PuppeteerPdfService : IPdfService, IAsyncDisposable
     {
         private readonly SemaphoreSlim _browserLock = new SemaphoreSlim(1, 1);
-        private readonly string _userDataDir;
         private Browser? _browser;
         private readonly string _browserDownloadPath;
 
@@ -15,16 +14,15 @@ namespace AspNetIntegrationTesting.Services
 
         public PuppeteerPdfService()
         {
-            _userDataDir = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
-            Directory.CreateDirectory(_userDataDir);
-
             if (IsRunningInContainer)
             {
                 return;
             }
 
-            _browserDownloadPath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
-            Directory.CreateDirectory(_browserDownloadPath);
+            // Download Chrome always to the same folder
+            _browserDownloadPath = Path.Combine(
+                Path.GetTempPath(),
+                "PuppeteerChrome");
         }
 
         public async ValueTask DisposeAsync()
@@ -38,8 +36,6 @@ namespace AspNetIntegrationTesting.Services
                     await _browser.DisposeAsync();
                     _browser = null;
                 }
-
-                ClearDirectories();
             }
             finally
             {
@@ -77,13 +73,11 @@ namespace AspNetIntegrationTesting.Services
                         // Browser got closed somehow. E.G. when the Chrome process is killed
                         _browser.Dispose();
                         _browser = null;
-                        ClearDirectories();
                     }
 
                     var launchOptions = new LaunchOptions
                     {
                         Headless = true,
-                        UserDataDir = _userDataDir,
                         Args = new[]
                         {
                             "--disable-gpu",
@@ -109,19 +103,6 @@ namespace AspNetIntegrationTesting.Services
             finally
             {
                 _browserLock.Release();
-            }
-        }
-
-        private void ClearDirectories()
-        {
-            if (Directory.Exists(_browserDownloadPath))
-            {
-                Directory.Delete(_browserDownloadPath, true);
-            }
-
-            if (Directory.Exists(_userDataDir))
-            {
-                Directory.Delete(_userDataDir, true);
             }
         }
     }
